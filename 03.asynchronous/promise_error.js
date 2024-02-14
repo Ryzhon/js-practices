@@ -16,12 +16,15 @@ dbRun(
   .then(() =>
     dbRun(db, "INSERT INTO books (title) VALUES (?)", "非同期処理入門"),
   )
+  .catch((err) => {
+    console.error("初回レコード挿入エラー:", err.message);
+  })
   .then((result) => {
     console.log(`レコードを挿入しました。ID: ${result.lastID}`);
     return dbRun(db, "INSERT INTO books (title) VALUES (?)", "非同期処理入門");
   })
   .catch((err) => {
-    console.error("レコード挿入エラー:", err.message);
+    console.error("二回目レコード挿入エラー:", err.message);
     dbGet(db, "SELECT * FROM books WHERE id = ?", 999);
   })
   .then((row) => {

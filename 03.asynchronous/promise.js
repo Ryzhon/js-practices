@@ -28,7 +28,7 @@ dbRun(
     console.log("テーブルを削除しました。");
   })
   .catch((err) => {
-    console.error("エラー発生:", err.message);
+    console.error("テーブル削除エラー:", err.message);
   })
   .finally(() => {
     db.close((err) => {
