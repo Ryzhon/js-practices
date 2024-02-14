@@ -22,7 +22,7 @@ dbRun(
   })
   .catch((err) => {
     console.error("レコード挿入エラー:", err.message);
-    dbGet(db, "SELECT * FROM books WHERE id = ?", [999]);
+    dbGet(db, "SELECT * FROM books WHERE id = ?", 999);
   })
   .then((row) => {
     if (!row) {

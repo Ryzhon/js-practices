@@ -29,7 +29,7 @@ async function main() {
     } catch (err) {
       console.error("レコード挿入エラー:", err.message);
       try {
-        const row = await dbGet(db, "SELECT * FROM books WHERE id = ?", [999]);
+        const row = await dbGet(db, "SELECT * FROM books WHERE id = ?", 999);
         if (!row) {
           console.log("指定されたIDのレコードは存在しません。");
         } else {

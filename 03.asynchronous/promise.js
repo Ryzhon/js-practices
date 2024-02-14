@@ -18,7 +18,7 @@ dbRun(
   )
   .then((result) => {
     console.log(`レコードを挿入しました。ID: ${result.lastID}`);
-    return dbGet(db, "SELECT * FROM books WHERE id = ?", [result.lastID]);
+    return dbGet(db, "SELECT * FROM books WHERE id = ?", result.lastID);
   })
   .then((row) => {
     console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);

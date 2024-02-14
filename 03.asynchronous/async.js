@@ -21,9 +21,11 @@ async function main() {
     );
     console.log(`レコードを挿入しました。ID: ${result.lastID}`);
 
-    const row = await dbGet(db, "SELECT * FROM books WHERE id = ?", [
+    const row = await dbGet(
+      db,
+      "SELECT * FROM books WHERE id = ?",
       result.lastID,
-    ]);
+    );
     console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);
 
     await dbRun(db, "DROP TABLE books");
