@@ -37,3 +37,16 @@ export function connectToDatabase() {
     });
   });
 }
+
+export function closeDatabase(db) {
+  return new Promise((resolve, reject) => {
+    db.close((err) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log("データベース接続を閉じました。");
+        resolve();
+      }
+    });
+  });
+}

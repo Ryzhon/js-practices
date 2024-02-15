@@ -1,4 +1,4 @@
-import { connectToDatabase } from "./db_utils.js";
+import { connectToDatabase, closeDatabase } from "./db_utils.js";
 import { dbRun, dbGet } from "./db_utils.js";
 
 connectToDatabase()
@@ -32,16 +32,7 @@ connectToDatabase()
         console.error("テーブル削除エラー:", err.message);
       })
       .finally(() => {
-        new Promise((resolve, reject) => {
-          db.close((err) => {
-            if (err) {
-              reject(err);
-            } else {
-              console.log("データベース接続を閉じました。");
-              resolve();
-            }
-          });
-        }).catch((err) => {
+        closeDatabase(db).catch((err) => {
           console.error("データベース接続終了エラー:", err.message);
         });
       });
