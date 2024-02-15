@@ -3,8 +3,11 @@ import { dbRun, dbGet } from "./db_utils.js";
 
 async function main() {
   const db = new sqlite3.Database(":memory:", (err) => {
-    if (err) console.error("データベース接続エラー:", err.message);
-    else console.log("メモリ内のSQLiteデータベースに接続しました。");
+    if (err) {
+      console.error("データベース接続エラー:", err.message);
+    } else {
+      console.log("メモリ内のSQLiteデータベースに接続しました。");
+    }
   });
 
   try {
