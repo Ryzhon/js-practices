@@ -6,7 +6,7 @@ export function databaseRun(db, sql, params = []) {
       if (err) {
         reject(err);
       } else {
-        resolve({ ...this });
+        resolve(this);
       }
     });
   });
@@ -24,14 +24,12 @@ export function databaseGet(db, sql, params = []) {
   });
 }
 
-export function connectToDatabase() {
+export function connectToDatabase(dbPath = ":memory:") {
   return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(":memory:", (err) => {
+    const db = new sqlite3.Database(dbPath, (err) => {
       if (err) {
-        console.error("データベース接続エラー:", err.message);
         reject(err);
       } else {
-        console.log("メモリ内のSQLiteデータベースに接続しました。");
         resolve(db);
       }
     });
@@ -44,7 +42,6 @@ export function closeDatabase(db) {
       if (err) {
         reject(err);
       } else {
-        console.log("データベース接続を閉じました。");
         resolve();
       }
     });

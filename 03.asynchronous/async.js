@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { dbRun, dbGet, closeDatabase } from "./db_utils.js";
+import { databaseRun, databaseGet, closeDatabase } from "./db_utils.js";
 
 const db = new sqlite3.Database(":memory:", (err) => {
   if (err) {
@@ -12,7 +12,7 @@ const db = new sqlite3.Database(":memory:", (err) => {
 let lastID;
 
 try {
-  await dbRun(
+  await databaseRun(
     db,
     "CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE)",
   );
@@ -21,7 +21,7 @@ try {
   console.error("テーブル作成エラー:", err.message);
 }
 try {
-  const result = await dbRun(
+  const result = await databaseRun(
     db,
     "INSERT INTO books (title) VALUES (?)",
     "非同期処理入門",
@@ -32,18 +32,22 @@ try {
   console.error("レコード挿入エラー:", err.message);
 }
 try {
-  const row = await dbGet(db, "SELECT * FROM books WHERE id = ?", lastID);
+  const row = await databaseGet(db, "SELECT * FROM books WHERE id = ?", lastID);
   console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);
 } catch (err) {
   console.error("レコード取得エラー:", err.message);
 }
 try {
-  await dbRun(db, "DROP TABLE books");
+  await (db, "DROP TABLE books");
   console.log("テーブルを削除しました。");
 } catch (err) {
   console.error("テーブル削除エラー:", err.message);
 } finally {
-  await closeDatabase(db).catch((err) => {
-    console.error("データベース接続終了時のエラー:", err.message);
-  });
+  await closeDatabase(db)
+    .then(() => {
+      console.log("データベース接続を閉じました。");
+    })
+    .catch((err) => {
+      console.error("データベース接続終了時のエラー:", err.message);
+    });
 }

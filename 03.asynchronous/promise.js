@@ -1,21 +1,34 @@
-import { connectToDatabase, closeDatabase } from "./db_utils.js";
-import { dbRun, dbGet } from "./db_utils.js";
+import {
+  connectToDatabase,
+  closeDatabase,
+  databaseRun,
+  databaseGet,
+} from "./db_utils.js";
 
 connectToDatabase()
   .then((db) => {
-    return dbRun(
+    console.log("SQLiteデータベースに接続しました。");
+    return databaseRun(
       db,
       "CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE)",
     )
       .then(() =>
-        dbRun(db, "INSERT INTO books (title) VALUES (?)", "非同期処理入門"),
+        databaseRun(
+          db,
+          "INSERT INTO books (title) VALUES (?)",
+          "非同期処理入門",
+        ),
       )
       .catch((err) => {
         console.error("初回レコード挿入エラー:", err.message);
       })
       .then((result) => {
         console.log(`レコードを挿入しました。ID: ${result.lastID}`);
-        return dbGet(db, "SELECT * FROM books WHERE id = ?", result.lastID);
+        return databaseGet(
+          db,
+          "SELECT * FROM books WHERE id = ?",
+          result.lastID,
+        );
       })
       .catch((err) => {
         console.error("レコード挿入エラー:", err.message);
@@ -23,7 +36,7 @@ connectToDatabase()
       })
       .then((row) => {
         console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);
-        return dbRun(db, "DROP TABLE books");
+        return databaseRun(db, "DROP TABLE books");
       })
       .then(() => {
         console.log("テーブルを削除しました。");
@@ -32,9 +45,14 @@ connectToDatabase()
         console.error("テーブル削除エラー:", err.message);
       })
       .finally(() => {
-        closeDatabase(db).catch((err) => {
-          console.error("データベース接続終了エラー:", err.message);
-        });
+        closeDatabase(db)
+          .then(() => {
+            console.log("データベース接続を閉じました。");
+          })
+
+          .catch((err) => {
+            console.error("データベース接続終了エラー:", err.message);
+          });
       });
   })
   .catch((err) => {
