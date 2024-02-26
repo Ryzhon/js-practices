@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 
-export function dbRun(db, sql, params = []) {
+export function databaseRun(db, sql, params = []) {
   return new Promise((resolve, reject) => {
     db.run(sql, params, function (err) {
       if (err) {
@@ -12,7 +12,7 @@ export function dbRun(db, sql, params = []) {
   });
 }
 
-export function dbGet(db, sql, params = []) {
+export function databaseGet(db, sql, params = []) {
   return new Promise((resolve, reject) => {
     db.get(sql, params, (err, row) => {
       if (err) {
