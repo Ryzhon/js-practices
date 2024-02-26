@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 
 const db = new sqlite3.Database(":memory:", (err) => {
   if (err) {
-    throw new Error("データベース接続エラー:", "err.message");
+    throw new Error(`データベース接続エラー:${err.message}`);
   }
   console.log("メモリ内のSQLiteデータベースに接続しました。");
 });
@@ -37,6 +37,7 @@ db.run(
             db.get("SELECT * FROM books WHERE id = ?", 999, (err, row) => {
               if (err) {
                 console.error("レコード取得エラー:", err.message);
+                throw new Error(`レコード取得エラー:${err.message}`);
               } else if (!row) {
                 console.log("指定されたIDのレコードは存在しません。");
               }
@@ -50,7 +51,7 @@ db.run(
 
                 db.close((err) => {
                   if (err) {
-                    console.error("データベース接続終了エラー:", err.message);
+                    console.error(`データベース接続終了エラー:${err.message}`);
                   } else {
                     console.log("データベース接続を閉じました。");
                   }

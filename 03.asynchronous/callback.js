@@ -3,7 +3,7 @@ import sqlite3 from "sqlite3";
 const db = new sqlite3.Database(":memory:", (err) => {
   if (err) {
     console.error("データベース接続エラー:", err.message);
-    return;
+    throw new Error(err.message);
   }
   console.log("メモリ内のSQLiteデータベースに接続しました。");
 });
