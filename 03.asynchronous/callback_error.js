@@ -32,15 +32,21 @@ db.run(
           function (err) {
             if (err) {
               console.error("二回目レコード挿入エラー:", err.message);
+              return;
             }
+            console.log(`レコードを挿入しました。ID: ${this.lastID}`);
 
             db.get("SELECT * FROM books WHERE id = ?", 999, (err, row) => {
               if (err) {
                 console.error("レコード取得エラー:", err.message);
-                throw Error(`レコード取得エラー:${err.message}`);
+                return;
               } else if (!row) {
                 console.log("指定されたIDのレコードは存在しません。");
+                return;
               }
+              console.log(
+                `取得したレコード: ID: ${row.id}, Title: ${row.title}`,
+              );
 
               db.run("DROP TABLE books", (err) => {
                 if (err) {

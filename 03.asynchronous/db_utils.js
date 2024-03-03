@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 
-export function databaseRun(db, sql, params = []) {
+export function runDatabaseQuery(db, sql, params = []) {
   return new Promise((resolve, reject) => {
     db.run(sql, params, function (err) {
       if (err) {
@@ -12,7 +12,7 @@ export function databaseRun(db, sql, params = []) {
   });
 }
 
-export function databaseGet(db, sql, params = []) {
+export function getDatabaseData(db, sql, params = []) {
   return new Promise((resolve, reject) => {
     db.get(sql, params, (err, row) => {
       if (err) {
@@ -24,7 +24,7 @@ export function databaseGet(db, sql, params = []) {
   });
 }
 
-export function connectToDatabase(dbPath = ":memory:") {
+export function openDatabaseConnection(dbPath = ":memory:") {
   return new Promise((resolve, reject) => {
     const db = new sqlite3.Database(dbPath, (err) => {
       if (err) {
@@ -36,7 +36,7 @@ export function connectToDatabase(dbPath = ":memory:") {
   });
 }
 
-export function closeDatabase(db) {
+export function closeDatabaseConnection(db) {
   return new Promise((resolve, reject) => {
     db.close((err) => {
       if (err) {
