@@ -24,9 +24,9 @@ export function getDatabaseData(db, sql, params = []) {
   });
 }
 
-export function openDatabaseConnection(dbPath = ":memory:") {
+export function openDatabaseConnection(path) {
   return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(dbPath, (err) => {
+    const db = new sqlite3.Database(path, (err) => {
       if (err) {
         reject(err);
       } else {

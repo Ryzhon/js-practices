@@ -1,15 +1,15 @@
 import {
-  databaseRun,
-  databaseGet,
-  closeDatabase,
-  connectToDatabase,
+  openDatabaseConnection,
+  getDatabaseData,
+  closeDatabaseConnection,
+  runDatabaseQuery,
 } from "./db_utils.js";
 
 let result;
 let db;
 try {
-  db = await connectToDatabase();
-  await databaseRun(
+  db = await openDatabaseConnection(":memory:");
+  await runDatabaseQuery(
     db,
     "CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE)",
   );
@@ -19,7 +19,7 @@ try {
   throw err;
 }
 try {
-  result = await databaseRun(
+  result = await runDatabaseQuery(
     db,
     "INSERT INTO books (title) VALUES (?)",
     "非同期処理入門",
@@ -30,7 +30,7 @@ try {
   throw err;
 }
 try {
-  const row = await databaseGet(
+  const row = await getDatabaseData(
     db,
     "SELECT * FROM books WHERE id = ?",
     result.lastID,
@@ -46,7 +46,7 @@ try {
   console.error("テーブル削除エラー:", err.message);
   throw err;
 } finally {
-  await closeDatabase(db)
+  await closeDatabaseConnection(db)
     .then(() => {
       console.log("データベース接続を閉じました。");
     })

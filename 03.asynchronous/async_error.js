@@ -1,15 +1,15 @@
 import {
-  databaseRun,
-  databaseGet,
-  closeDatabase,
-  connectToDatabase,
+  openDatabaseConnection,
+  runDatabaseQuery,
+  getDatabaseData,
+  closeDatabaseConnection,
 } from "./db_utils.js";
 
 let result;
 let db;
 try {
-  db = await connectToDatabase();
-  await databaseRun(
+  db = await openDatabaseConnection(":memory:");
+  await runDatabaseQuery(
     db,
     "CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE)",
   );
@@ -19,7 +19,7 @@ try {
   throw err;
 }
 try {
-  const result = await databaseRun(
+  const result = await runDatabaseQuery(
     db,
     "INSERT INTO books (title) VALUES (?)",
     "非同期処理入門",
@@ -30,7 +30,7 @@ try {
   throw err;
 }
 try {
-  await databaseRun(
+  await runDatabaseQuery(
     db,
     "INSERT INTO books (title) VALUES (?)",
     "非同期処理入門",
@@ -41,7 +41,11 @@ try {
 }
 
 try {
-  const row = await databaseGet(db, "SELECT * FROM books WHERE id = ?", 999);
+  const row = await getDatabaseData(
+    db,
+    "SELECT * FROM books WHERE id = ?",
+    999,
+  );
   if (row) {
     console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);
   } else {
@@ -52,13 +56,13 @@ try {
   throw err;
 }
 try {
-  await databaseRun(db, "DROP TABLE books");
+  await runDatabaseQuery(db, "DROP TABLE books");
   console.log("テーブルを削除しました。");
 } catch (err) {
   console.error("テーブル削除エラー:", err.message);
   throw err;
 } finally {
-  await closeDatabase(db)
+  await closeDatabaseConnection(db)
     .then(() => {
       console.log("データベース接続を閉じました。");
     })
