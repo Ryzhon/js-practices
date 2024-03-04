@@ -8,28 +8,44 @@ import {
 
 let dbInstance = null;
 openDatabaseConnection(":memory:")
+  .catch((err) => {
+    console.error("データベース接続エラー:", err.message);
+    throw err;
+  })
   .then((db) => {
     dbInstance = db;
+    console.log("SQLiteデータベースに接続しました。");
     return createBooksTable(db);
   })
   .catch((err) => console.error("テーブル作成エラー:", err.message))
-  .then(() => insertBook(dbInstance))
+  .then(() => {
+    console.log("テーブルを作成しました。");
+    return insertBook(dbInstance);
+  })
   .catch((err) => console.error("レコード挿入エラー:", err.message))
-  .then(() => insertBook(dbInstance))
+  .then((result) => {
+    console.log(`レコードを挿入しました。ID: ${result.lastID}`);
+    return insertBook(dbInstance);
+  })
   .catch((err) => console.error("二回目レコード挿入エラー:", err.message))
   .then(() => {
     const fakeResult = { lastID: 999 };
     return getBook(dbInstance, fakeResult);
   })
   .catch((err) => console.error("レコード取得エラー:", err.message))
-  .then(() => dropBooksTable(dbInstance))
+  .then((row) => {
+    if (!row) {
+      console.log("指定されたIDのレコードは存在しません。");
+    } else {
+      console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);
+    }
+    return dropBooksTable(dbInstance);
+  })
   .catch((err) => console.error("テーブル削除エラー:", err.message))
   .then(() => {
-    if (dbInstance) {
-      closeDatabaseConnection(dbInstance)
-        .then(() => console.log("データベース接続を閉じました。"))
-        .catch((err) =>
-          console.error("データベース接続終了エラー:", err.message),
-        );
-    }
-  });
+    console.log("テーブルを削除しました。");
+    return closeDatabaseConnection(dbInstance);
+  })
+  .catch((err) => console.error("データベース接続終了エラー:", err.message))
+  .then(() => console.log("データベース接続を閉じました。"))
+  .catch((err) => console.error(`エラー: ${err.message}`));

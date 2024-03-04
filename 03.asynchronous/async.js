@@ -5,10 +5,17 @@ import {
   runDatabaseQuery,
 } from "./db_utils.js";
 
-let result;
 let db;
+let result;
+
 try {
   db = await openDatabaseConnection(":memory:");
+  console.log("SQLiteデータベースに接続しました。");
+} catch (err) {
+  console.error("データベース接続エラー:", err.message);
+  throw err;
+}
+try {
   await runDatabaseQuery(
     db,
     "CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE)",
@@ -45,12 +52,11 @@ try {
 } catch (err) {
   console.error("テーブル削除エラー:", err.message);
   throw err;
-} finally {
-  await closeDatabaseConnection(db)
-    .then(() => {
-      console.log("データベース接続を閉じました。");
-    })
-    .catch((err) => {
-      console.error("データベース接続終了時のエラー:", err.message);
-    });
+}
+try {
+  await closeDatabaseConnection(db);
+
+  console.log("データベース接続を閉じました。");
+} catch (err) {
+  console.error("データベース接続終了時のエラー:", err.message);
 }
