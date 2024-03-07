@@ -20,19 +20,21 @@ db.run(
             if (err) {
               console.error("二回目レコード挿入エラー:", err.message);
             }
-            db.get("SELECT * FROM books WHERE id = ?", 999, (err, row) => {
-              if (err) {
-                console.error("レコード取得エラー", err.message);
-              } else if (!row) {
-                console.log("レコードを取得できませんでした。");
-              }
-              db.run("DROP TABLE books", () => {
-                console.log("テーブルを削除しました。");
-                db.close(() => {
-                  console.log("データベース接続を閉じました。");
+            db.get(
+              "SELECT * FROM non_existing_table WHERE id = ?",
+              1,
+              (err) => {
+                if (err) {
+                  console.error("レコード取得エラー:", err.message);
+                }
+                db.run("DROP TABLE books", () => {
+                  console.log("テーブルを削除しました。");
+                  db.close(() => {
+                    console.log("データベース接続を閉じました。");
+                  });
                 });
-              });
-            });
+              },
+            );
           },
         );
       },
