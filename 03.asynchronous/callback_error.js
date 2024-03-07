@@ -8,7 +8,6 @@ db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE)",
   () => {
     console.log("テーブルを作成しました。");
-
     db.run(
       "INSERT INTO books (title) VALUES (?)",
       "非同期処理入門",
@@ -17,12 +16,16 @@ db.run(
         db.run(
           "INSERT INTO books (title) VALUES (?)",
           "非同期処理入門",
-          function (err) {
+          (err) => {
             if (err) {
               console.error("二回目レコード挿入エラー:", err.message);
             }
-            db.get("SELECT * FROM books WHERE id = ?", 999, () => {
-              console.log("指定されたIDのレコードは存在しません。");
+            db.get("SELECT * FROM books WHERE id = ?", 999, (err, row) => {
+              if (err) {
+                console.error("レコード取得エラー", err.message);
+              } else if (!row) {
+                console.log("レコードを取得できませんでした。");
+              }
               db.run("DROP TABLE books", () => {
                 console.log("テーブルを削除しました。");
                 db.close(() => {

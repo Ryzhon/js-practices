@@ -8,7 +8,6 @@ db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE)",
   () => {
     console.log("テーブルを作成しました。");
-
     db.run(
       "INSERT INTO books (title) VALUES (?)",
       "非同期処理入門",
