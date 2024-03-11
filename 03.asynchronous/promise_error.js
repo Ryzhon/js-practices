@@ -5,11 +5,11 @@ import {
   getDatabaseData,
 } from "./db_utils.js";
 
-let newDb = undefined;
+let db;
 
 openDatabaseConnection(":memory:")
-  .then((db) => {
-    newDb = db;
+  .then((newDb) => {
+    db = newDb;
     console.log("メモリ内のSQLiteデータベースに接続しました。");
     return runDatabaseQuery(
       newDb,
@@ -19,7 +19,7 @@ openDatabaseConnection(":memory:")
   .then(() => {
     console.log("テーブルを作成しました。");
     return runDatabaseQuery(
-      newDb,
+      db,
       "INSERT INTO books (title) VALUES (?)",
       "非同期処理入門",
     );
@@ -27,7 +27,7 @@ openDatabaseConnection(":memory:")
   .then((result) => {
     console.log(`レコードを挿入しました。ID: ${result.lastID}`);
     return runDatabaseQuery(
-      newDb,
+      db,
       "INSERT INTO books (title) VALUES (?)",
       "非同期処理入門",
     );
@@ -35,17 +35,19 @@ openDatabaseConnection(":memory:")
   .catch((err) => {
     console.error("二回目レコード挿入エラー:", err.message);
     return getDatabaseData(
-      newDb,
+      db,
       "SELECT * FROM non_existing_table WHERE id = ?",
       1,
     );
   })
   .catch((err) => {
     console.error("レコード取得エラー:", err.message);
-    return runDatabaseQuery(newDb, "DROP TABLE books");
+    return runDatabaseQuery(db, "DROP TABLE books");
   })
   .then(() => {
     console.log("テーブルを削除しました。");
-    return closeDatabaseConnection(newDb);
+    return closeDatabaseConnection(db);
   })
-  .then(() => console.log("データベース接続を閉じました。"));
+  .then(() => {
+    console.log("データベース接続を閉じました。");
+  });

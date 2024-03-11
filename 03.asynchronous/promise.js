@@ -5,11 +5,11 @@ import {
   getDatabaseData,
 } from "./db_utils.js";
 
-let newDb = undefined;
+let db;
 
 openDatabaseConnection(":memory:")
-  .then((db) => {
-    newDb = db;
+  .then((newDb) => {
+    db = newDb;
     console.log("メモリ内のSQLiteデータベースに接続しました。");
     return runDatabaseQuery(
       newDb,
@@ -19,7 +19,7 @@ openDatabaseConnection(":memory:")
   .then(() => {
     console.log("テーブルを作成しました。");
     return runDatabaseQuery(
-      newDb,
+      db,
       "INSERT INTO books (title) VALUES (?)",
       "非同期処理入門",
     );
@@ -27,17 +27,19 @@ openDatabaseConnection(":memory:")
   .then((result) => {
     console.log(`レコードを挿入しました。ID: ${result.lastID}`);
     return getDatabaseData(
-      newDb,
+      db,
       "SELECT * FROM books WHERE id = ?",
       result.lastID,
     );
   })
   .then((row) => {
     console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);
-    return runDatabaseQuery(newDb, "DROP TABLE books");
+    return runDatabaseQuery(db, "DROP TABLE books");
   })
   .then(() => {
     console.log("テーブルを削除しました。");
-    return closeDatabaseConnection(newDb);
+    return closeDatabaseConnection(db);
   })
-  .then(() => console.log("データベース接続を閉じました。"));
+  .then(() => {
+    console.log("データベース接続を閉じました。")
+  });
