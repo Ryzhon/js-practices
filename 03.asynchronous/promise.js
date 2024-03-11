@@ -41,5 +41,5 @@ openDatabaseConnection(":memory:")
     return closeDatabaseConnection(db);
   })
   .then(() => {
-    console.log("データベース接続を閉じました。")
+    console.log("データベース接続を閉じました。");
   });
