@@ -5,9 +5,7 @@ import {
   getDatabaseData,
 } from "./db_utils.js";
 
-let db;
-
-db = await openDatabaseConnection(":memory:");
+const db = await openDatabaseConnection(":memory:");
 console.log("SQLiteデータベースに接続しました。");
 
 await runDatabaseQuery(
@@ -32,5 +30,6 @@ console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);
 
 await (db, "DROP TABLE books");
 console.log("テーブルを削除しました。");
+
 await closeDatabaseConnection(db);
 console.log("データベース接続を閉じました。");
