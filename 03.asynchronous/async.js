@@ -28,7 +28,7 @@ const row = await getDatabaseData(
 );
 console.log(`取得したレコード: ID: ${row.id}, Title: ${row.title}`);
 
-await (db, "DROP TABLE books");
+await runDatabaseQuery(db, "DROP TABLE books");
 console.log("テーブルを削除しました。");
 
 await closeDatabaseConnection(db);

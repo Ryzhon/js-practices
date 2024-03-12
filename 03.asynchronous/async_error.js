@@ -5,9 +5,7 @@ import {
   getDatabaseData,
 } from "./db_utils.js";
 
-let db;
-
-db = await openDatabaseConnection(":memory:");
+const db = await openDatabaseConnection(":memory:");
 console.log("SQLiteデータベースに接続しました。");
 
 await runDatabaseQuery(
@@ -22,6 +20,7 @@ const result = await runDatabaseQuery(
   "非同期処理入門",
 );
 console.log(`レコードを挿入しました。ID: ${result.lastID}`);
+
 try {
   await runDatabaseQuery(
     db,
@@ -35,6 +34,7 @@ try {
     throw err;
   }
 }
+
 try {
   await getDatabaseData(db, "SELECT * FROM non_existing_table WHERE id = ?", 1);
 } catch (err) {
@@ -46,5 +46,6 @@ try {
 
 await runDatabaseQuery(db, "DROP TABLE books");
 console.log("テーブルを削除しました。");
+
 await closeDatabaseConnection(db);
 console.log("データベース接続を閉じました。");
