@@ -27,13 +27,14 @@ try {
     "INSERT INTO books (title) VALUES (?)",
     "非同期処理入門",
   );
-  console.log(`二回目のレコードを挿入しました。ID: ${result.lastID}`);
 } catch (err) {
   if (
     typeof err === "object" &&
     err !== null &&
-    err.code !== "SQLITE_CONSTRAINT"
+    err.code === "SQLITE_CONSTRAINT"
   ) {
+    console.error("二回目レコード取得エラー:", err.message);
+  } else {
     throw err;
   }
 }
