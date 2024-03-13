@@ -33,7 +33,7 @@ try {
     err !== null &&
     err.code === "SQLITE_CONSTRAINT"
   ) {
-    console.error("二回目レコード取得エラー:", err.message);
+    console.error("二回目レコード挿入エラー:", err.message);
   } else {
     throw err;
   }
@@ -42,7 +42,9 @@ try {
 try {
   await getDatabaseData(db, "SELECT * FROM non_existing_table WHERE id = ?", 1);
 } catch (err) {
-  if (typeof err === "object" && err !== null && err.code !== "SQLITE_ERROR") {
+  if (typeof err === "object" && err !== null && err.code === "SQLITE_ERROR") {
+    console.error("レコード取得エラー:", err.message);
+  } else {
     throw err;
   }
 }
