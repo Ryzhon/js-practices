@@ -29,8 +29,11 @@ try {
   );
   console.log(`二回目のレコードを挿入しました。ID: ${result.lastID}`);
 } catch (err) {
-  console.error("二回目レコード取得エラー:", err.message);
-  if (err.code !== "SQLITE_CONSTRAINT") {
+  if (
+    typeof err === "object" &&
+    err !== null &&
+    err.code !== "SQLITE_CONSTRAINT"
+  ) {
     throw err;
   }
 }
@@ -38,8 +41,7 @@ try {
 try {
   await getDatabaseData(db, "SELECT * FROM non_existing_table WHERE id = ?", 1);
 } catch (err) {
-  console.error("レコード取得エラー:", err.message);
-  if (err.code !== "SQLITE_ERROR") {
+  if (typeof err === "object" && err !== null && err.code !== "SQLITE_ERROR") {
     throw err;
   }
 }
